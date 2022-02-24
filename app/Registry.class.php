@@ -32,13 +32,13 @@ class Registry extends Database
      */
     private function checkIfCodeUnique(string $code): bool
     {
-        $status = '';
-        foreach ($this->getDatabaseRecords() as $data) {
-            if ($code !== $data['code']) {
-                $status = true;
-            } else {
-                $status = false;
-            }
+        $status = false;
+        $sql = 'SELECT * FROM person_register.persons where code = ?';
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindValue(1, $code);
+        $dbCode = $stmt->executeQuery();
+        if($dbCode->rowCount() === 0) {
+            $status = true;
         }
         return $status;
     }
